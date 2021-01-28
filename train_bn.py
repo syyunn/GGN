@@ -1,11 +1,6 @@
 # 导入必要的包
-import numpy as np
-from torch.utils.data import DataLoader
 import torch.optim as optim
-from torch.autograd import Variable
 import argparse
-import time
-import copy
 from utils.model import *
 
 # from models import *
@@ -105,7 +100,7 @@ def train_batch_dyn(optimizer, dyn_learner, adj, data_train, data_target, loss_f
     data_target = data_target.long()
     accus = cacu_accu(output, data_target)
     loss = loss_fn(output, data_target)
-    loss.backward()
+    loss.backward(retain_graph=True)
 
     # optimizer for dyn learner
     optimizer.step()
@@ -196,7 +191,8 @@ for epoch in range(Epoch_Num):
     print("epoch running:" + str(epoch) + " / " + str(Epoch_Num))
 
     print("use gumbel")
-    adj = gumbel_generator.sample(hard=True)
+    # adj = gumbel_generator.sample(hard=True)
+    adj = gumbel_generator.sample(hard=False)
 
     # 先训练dynamics
     losses = []
@@ -289,7 +285,8 @@ print("accuracy:" + str(np.mean(np.array(accu_all))))
 err_net = constructor_evaluator_withdiag(gumbel_generator, 500, standard_adj)
 print("err_net:" + str(err_net))
 
-out_matrix = gumbel_generator.sample(hard=True)
+# out_matrix = gumbel_generator.sample(hard=True)
+out_matrix = gumbel_generator.sample(hard=False)
 (tpr, fpr) = tpr_fpr(out_matrix.cpu(), standard_adj)
 print("tpr:" + str(tpr))
 print("fpr:" + str(fpr))
