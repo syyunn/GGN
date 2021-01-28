@@ -54,7 +54,7 @@ def constructor_evaluator(gumbel_generator, tests, obj_matrix, sz):
     return err_net
 
 def constructor_evaluator_withdiag(gumbel_generator, tests, obj_matrix):
-    obj_matrix = obj_matrix.cuda()
+    # obj_matrix = obj_matrix.cuda()
     sz = obj_matrix.size(0)
     errs= []
     for t in range(tests):
@@ -127,6 +127,11 @@ def load_bn_ggn(batch_size = 128,dyn_type='table'):
     # address
     series_address = './data/bn/mark-14771-adjmat.pickle'
     adj_address = './data/bn/mark-14771-series.pickle'
+
+    mark_num = 54799
+    series_address = f'./data/bn/mark-{mark_num}-adjmat.pickle'
+    adj_address = f'./data/bn/mark-{mark_num}-series.pickle'
+
 
     # 5/7 for training, 1/7 for validation and 1/7 for test
     use_state = 1024
@@ -228,8 +233,13 @@ def load_bn_ggn(batch_size = 128,dyn_type='table'):
 
 def load_cml_ggn(batch_size = 128):
     data_path = './data/cml/data_lambd3.6_coupl0.2_node10.pickle'
+
+    # with open(data_path, 'rb') as f:
+    #     object_matrix, train_data, val_data, test_data = pickle.load(f) # (samples, nodes, timesteps, 1)
+    data_path = '/Users/suyeol/GGN/data/cml/data_lambd3.5_coupl0.2_node100.pickle'
     with open(data_path, 'rb') as f:
-        object_matrix, train_data, val_data, test_data = pickle.load(f) # (samples, nodes, timesteps, 1)
+        object_matrix, train_data, val_data, test_data = pickle.load(f)  # (samples, nodes, timesteps, 1)
+
     print('\nMatrix dimension: %s Train data size: %s Val data size: %s Test data size: %s'
           % (object_matrix.shape, train_data.shape, val_data.shape, test_data.shape))
 
