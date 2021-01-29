@@ -52,9 +52,10 @@ class Gumbel_Generator(nn.Module):
             self.gen_matrix.size()[0], self.gen_matrix.size()[0]
         )
 
-        # Make weighted matrix
+        # Make weighted matrix as type of OUTGOING_SUMS_UPTO_1 #
         import torch.nn.functional as F
         out_matrix = F.softmax(out_matrix, dim=1)
+        ########################################################
 
         return out_matrix
 

@@ -28,8 +28,9 @@ def train_dynamics_learner(optimizer, dynamics_learner, relations, data, sz, ste
     adjs = adjs.cuda() if use_cuda else adjs
     
     input = data[:, :, 0, :]
-    target = data[:, :, 1 : steps, :]
-    output = input
+    target = data[:, :, 1 : steps, :] # data should hold "steps(default 10)" size of data in order. and [batch, num_nodes, t, num_features]
+    output = input  # x0_predict <- x0
+    # 128, 10, 1 <- 128, 10, 1
     
     outputs = torch.zeros(data.size()[0], data.size()[1], steps - 1, data.size(3))
     outputs = outputs.cuda() if use_cuda else outputs

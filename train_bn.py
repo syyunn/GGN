@@ -93,7 +93,7 @@ def train_batch_dyn(optimizer, dyn_learner, adj, data_train, data_target, loss_f
     adj = adj.repeat(data_train.size()[0], 1, 1)
     adj = adj.cuda() if use_cuda else adj
 
-    # get result caculated by neural network
+    # get result calculated by neural network
     output = dyn_learner(data_train, adj)
     output = output.permute(0, 2, 1)
 
