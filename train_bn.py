@@ -74,6 +74,7 @@ print("Data Loading...")
 train_data_loader, valid_data_loader, test_data_loader, edges_train = load_bn_ggn(
     batch_size=Batch_Size, dyn_type=Dyn_Type
 )
+
 print("train set batch num : " + str(len(train_data_loader)))
 print("val set batch num : " + str(len(valid_data_loader)))
 print("test set batch num : " + str(len(test_data_loader)))

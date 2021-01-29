@@ -127,15 +127,11 @@ def weighted(data, v_x_ratio):
 
 def load_bn_ggn(batch_size=128, dyn_type="table"):
 
-    # address
-    series_address = "./data/bn/mark-14771-adjmat.pickle"
-    adj_address = "./data/bn/mark-14771-series.pickle"
-
     mark_num = 54799
     adj_address = f"./data/bn/mark-{mark_num}-adjmat.pickle"
     series_address = f"./data/bn/mark-{mark_num}-series.pickle"
 
-    # 5/7 for training, 1/7 for validation and 1/7 for test among ALL TIME SERIES
+    # WE use 5/7 for training, 1/7 for validation and 1/7 for test among ALL TIME SERIES
     use_state = 1024
 
     # adj mat
