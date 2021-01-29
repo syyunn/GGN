@@ -11,8 +11,8 @@ np.random.seed(2050)
 torch.manual_seed(2050)
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--nodes', type=int, default=100, help='Number of nodes, default=10')
-parser.add_argument('--samples', type=int, default=700, help='Number of samples in simulation, default=7000')
+parser.add_argument('--nodes', type=int, default=10, help='Number of nodes, default=10')
+parser.add_argument('--samples', type=int, default=1, help='Number of samples in simulation, default=7000')
 parser.add_argument('--prediction-steps', type=int, default=10, help='prediction steps, default=10')
 parser.add_argument('--evolving-steps', type=int, default=100, help='evolving steps, default=100')
 parser.add_argument('--lambd', type=float, default=3.5, help='lambda in logistic map, default=3.6')
@@ -81,6 +81,21 @@ if __name__ == '__main__':
             locs = locs.cpu().data.numpy() if use_cuda else locs.data.numpy()
             simulates[:, :, t // sample_freq - 1, 0] = locs
     data = torch.Tensor(simulates)
+
+    # Switch to raw data
+    data = np.load('./cml/gvc.npy')
+
+    # min-max normalize following every time step axis
+    for t in range(0, data.shape[0]):
+        v = data[t, :, :]
+        data[t, :, :] = (v - v.min()) / (v.max() - v.min())
+
+    data = torch.Tensor(data)
+    data = data.unsqueeze(0)
+    data = data.permute(0, 2, 1, 3)
+    print(data)
+    #####
+
     print('原始数据维度：', simulates.shape)
 
     # 数据切割
@@ -92,20 +107,33 @@ if __name__ == '__main__':
             features = feat
         else:
             features = torch.cat((features, feat), dim=0)
+            print(features)
     # features数据格式：sample, nodes, timesteps, dimension=1)
     print('切割后的数据维度：', features.shape)
 
     # shuffle
-    features_perm = features[torch.randperm(features.shape[0])]
+    # features_perm = features[torch.randperm(features.shape[0])]
 
     # 划分train, val, test
-    train_data = features_perm[: features.shape[0] // 7 * 5, :, :, :]
-    val_data = features_perm[features.shape[0] // 7 * 5: features.shape[0] // 7 * 6, :, :, :]
-    test_data = features_perm[features.shape[0] // 7 * 6:, :, :, :]
+    # train_data = features_perm[: features.shape[0] // 7 * 5, :, :, :]
+    # val_data = features_perm[features.shape[0] // 7 * 5: features.shape[0] // 7 * 6, :, :, :]
+    # test_data = features_perm[features.shape[0] // 7 * 6:, :, :, :]
+    train_data = features
+    val_data = features
+    test_data = features
 
-    print(train_data.shape, val_data.shape, test_data.shape)
+    # print(train_data.shape, val_data.shape, test_data.shape)
 
     results = [simulator.obj_matrix, train_data, val_data, test_data]
 
-    with open(args.data_name, 'wb') as f:
+    # with open(args.data_name, 'wb') as f:
+    #     pickle.dump(results, f)
+
+    data_path = './cml/trade_data_min_max_normalized.pickle'
+    print(data_path)
+    with open(data_path, 'wb') as f:
         pickle.dump(results, f)
+
+
+if __name__ == "__main__":
+    pass

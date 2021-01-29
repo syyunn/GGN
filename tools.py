@@ -232,7 +232,9 @@ def load_cml_ggn(batch_size=128):
 
     # with open(data_path, 'rb') as f:
     #     object_matrix, train_data, val_data, test_data = pickle.load(f) # (samples, nodes, timesteps, 1)
-    data_path = "/Users/suyeol/GGN/data/data_lambd3.5_coupl0.2_node10.pickle"
+    # data_path = "/Users/suyeol/GGN/data/data_lambd3.5_coupl0.2_node10.pickle"
+    # data_path = "/Users/suyeol/GGN/data/cml/trade_data.pickle"
+    data_path = "/tmp/pycharm_project_897/data/cml/trade_data_min_max_normalized.pickle"
     with open(data_path, "rb") as f:
         object_matrix, train_data, val_data, test_data = pickle.load(
             f
