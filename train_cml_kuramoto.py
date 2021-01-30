@@ -24,11 +24,11 @@ def train_dynamics(
     experiment,
     skip_conn,
 ):
-    matrix = gumbel_generator.sample(hard=True)  # Sample from gumbel generator
+    matrix = gumbel_generator.sample(hard=False)  # Sample from gumbel generator
 
-    fig = plt.figure()
-    plt.imshow(matrix.to("cpu").numpy(), cmap="gray")
-    plt.close()
+    # fig = plt.figure()
+    # plt.imshow(matrix.to("cpu").numpy(), cmap="gray")
+    # plt.close()
 
     loss_records = []
     mse_records = []
@@ -203,7 +203,7 @@ def main():
         help="input batch size for training (default: 128)",
     )
     parser.add_argument(
-        "--epochs", type=int, default=15, help="number of epochs, default: 15)"
+        "--epochs", type=int, default=10000, help="number of epochs, default: 15)"
     )
     parser.add_argument(
         "--experiments",
@@ -214,13 +214,13 @@ def main():
     parser.add_argument(
         "--dynamics-steps",
         type=int,
-        default=30,
+        default=1,
         help="number of steps for dynamics learning (default: 30)",
     )
     parser.add_argument(
         "--reconstruct-steps",
         type=int,
-        default=5,
+        default=1,
         help="number of steps for reconstruction (default: 5)",
     )
     parser.add_argument(
@@ -256,6 +256,7 @@ def main():
 
     args = parser.parse_args()
     use_cuda = not args.no_cuda and torch.cuda.is_available()
+    print("use_cuda", use_cuda)
 
     torch.manual_seed(args.seed)
 
@@ -292,6 +293,7 @@ def main():
         dynamics_learner = GumbelGraphNetwork(2).to(device)
         optimizer = optim.Adam(dynamics_learner.parameters(), lr=0.0001)
 
+        print("total epoch: ", args.epochs)
         for epoch in range(1, args.epochs + 1):
             print(
                 "\n---------- Experiment %d  Epoch %d ----------" % (experiment, epoch)

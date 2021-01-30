@@ -40,7 +40,7 @@ def train_dynamics_learner(optimizer, dynamics_learner, relations, data, sz, ste
         outputs[:,:,t,:] = output
     
     loss = torch.mean(torch.abs(outputs - target))
-    loss.backward()
+    loss.backward(retain_graph=True)
     optimizer.step()
     mse = F.mse_loss(outputs, target)
     if use_cuda:
@@ -48,6 +48,7 @@ def train_dynamics_learner(optimizer, dynamics_learner, relations, data, sz, ste
         mse = mse.cpu()
     return loss, mse
 # 动力学学习器dynamics_learner的一步校验
+
 
 def val_dynamics_learner(dynamics_learner, relations, sz, data, steps,skip_conn=False):
     # dynamics_learner.test()
