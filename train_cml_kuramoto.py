@@ -124,15 +124,7 @@ def train_gumbel(
             )
             loss_record.append(loss.item())
         loss_records.append(np.mean(loss_record))
-        # if step % 1 == 0:
-        #     net_error, tpr, fpr = constructor_evaluator(
-        #         gumbel_generator, 500, object_matrix, args.nodes
-        #     )
-        #     net_error_records.append(net_error)
-        #     tpr_records.append(tpr)
-        #     fpr_records.append(fpr)
-        #     print("\nGumbel training step: %d, loss: %f" % (step, np.mean(loss_record)))
-        #     print("Net error: %f, TPR: %f, FPR: %f" % (net_error, tpr, fpr))
+        print("\nGumbel training step: %d, loss: %f" % (step, np.mean(loss_record)))
 
 
 def test(
@@ -220,7 +212,7 @@ def main():
     parser.add_argument(
         "--reconstruct-steps",
         type=int,
-        default=1,
+        default=5,
         help="number of steps for reconstruction (default: 5)",
     )
     parser.add_argument(
@@ -315,18 +307,17 @@ def main():
                 experiment,
                 args.skip,
             )
-
-            val_loss = val_dynamics(
-                args,
-                dynamics_learner,
-                gumbel_generator,
-                device,
-                val_loader,
-                epoch,
-                experiment,
-                best_val_loss,
-                args.skip,
-            )
+            # val_loss = val_dynamics(
+            #     args,
+            #     dynamics_learner,
+            #     gumbel_generator,
+            #     device,
+            #     val_loader,
+            #     epoch,
+            #     experiment,
+            #     best_val_loss,
+            #     args.skip,
+            # )
             train_gumbel(
                 args,
                 dynamics_learner,
@@ -340,13 +331,13 @@ def main():
                 args.skip,
             )
 
-            if val_loss < best_val_loss:
-                best_val_loss = val_loss
-                best_epoch = epoch
-            print(
-                "\nCurrent best epoch: %d, best val loss: %f"
-                % (best_epoch, best_val_loss)
-            )
+            # if val_loss < best_val_loss:
+            #     best_val_loss = val_loss
+            #     best_epoch = epoch
+            # print(
+            #     "\nCurrent best epoch: %d, best val loss: %f"
+            #     % (best_epoch, best_val_loss)
+            # )
 
         print("\nBest epoch: %d" % best_epoch)
         test(
