@@ -67,7 +67,7 @@ def val_dynamics(
     best_val_loss,
     skip_conn,
 ):
-    matrix = gumbel_generator.sample(hard=True)  # Sample from gumbel generator
+    matrix = gumbel_generator.sample(hard=False)  # Sample from gumbel generator
 
     loss_record = []
     mse_record = []
@@ -124,15 +124,15 @@ def train_gumbel(
             )
             loss_record.append(loss.item())
         loss_records.append(np.mean(loss_record))
-        if step % 1 == 0:
-            net_error, tpr, fpr = constructor_evaluator(
-                gumbel_generator, 500, object_matrix, args.nodes
-            )
-            net_error_records.append(net_error)
-            tpr_records.append(tpr)
-            fpr_records.append(fpr)
-            print("\nGumbel training step: %d, loss: %f" % (step, np.mean(loss_record)))
-            print("Net error: %f, TPR: %f, FPR: %f" % (net_error, tpr, fpr))
+        # if step % 1 == 0:
+        #     net_error, tpr, fpr = constructor_evaluator(
+        #         gumbel_generator, 500, object_matrix, args.nodes
+        #     )
+        #     net_error_records.append(net_error)
+        #     tpr_records.append(tpr)
+        #     fpr_records.append(fpr)
+        #     print("\nGumbel training step: %d, loss: %f" % (step, np.mean(loss_record)))
+        #     print("Net error: %f, TPR: %f, FPR: %f" % (net_error, tpr, fpr))
 
 
 def test(
@@ -155,7 +155,7 @@ def test(
     )
 
     # evaluate dynamics
-    matrix = gumbel_generator.sample(hard=True)  # Sample from gumbel generator
+    matrix = gumbel_generator.sample(hard=False)  # Sample from gumbel generator
 
     dynamics_learner.eval()
     loss_record = []
@@ -284,9 +284,15 @@ def main():
         best_val_loss = np.inf
         best_epoch = 0
 
+        # gumbel_generator = Gumbel_Generator(
+        #     sz=args.nodes, temp=10, temp_drop_frac=0.9999
+        # ).to(device)
+        gumbel_temperature = 0.5
+        print("gumbel_temperature", gumbel_temperature)
         gumbel_generator = Gumbel_Generator(
-            sz=args.nodes, temp=10, temp_drop_frac=0.9999
+            sz=args.nodes, temp=gumbel_temperature, temp_drop_frac=0.9999
         ).to(device)
+
         optimizer_network = optim.Adam(gumbel_generator.parameters(), lr=0.1)
 
         # dynamics_learner = GumbelGraphNetwork(args.dims).to(device)
@@ -309,6 +315,7 @@ def main():
                 experiment,
                 args.skip,
             )
+
             val_loss = val_dynamics(
                 args,
                 dynamics_learner,
