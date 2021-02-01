@@ -212,7 +212,7 @@ def main():
     parser.add_argument(
         "--reconstruct-steps",
         type=int,
-        default=5,
+        default=1,
         help="number of steps for reconstruction (default: 5)",
     )
     parser.add_argument(
@@ -273,16 +273,16 @@ def main():
     for experiment in range(1, args.experiments + 1):
         print("\n---------- Experiment %d ----------" % experiment)
 
-        best_val_loss = np.inf
+        # best_val_loss = np.inf
         best_epoch = 0
 
         # gumbel_generator = Gumbel_Generator(
         #     sz=args.nodes, temp=10, temp_drop_frac=0.9999
         # ).to(device)
-        gumbel_temperature = 0.5
+        gumbel_temperature = 0.01
         print("gumbel_temperature", gumbel_temperature)
         gumbel_generator = Gumbel_Generator(
-            sz=args.nodes, temp=gumbel_temperature, temp_drop_frac=0.9999
+            sz=args.nodes, temp=gumbel_temperature, temp_drop_frac=0.999
         ).to(device)
 
         optimizer_network = optim.Adam(gumbel_generator.parameters(), lr=0.1)
@@ -338,18 +338,17 @@ def main():
             #     "\nCurrent best epoch: %d, best val loss: %f"
             #     % (best_epoch, best_val_loss)
             # )
-
         print("\nBest epoch: %d" % best_epoch)
-        test(
-            args,
-            dynamics_learner,
-            gumbel_generator,
-            device,
-            test_loader,
-            object_matrix,
-            experiment,
-            args.skip,
-        )
+        # test(
+        #     args,
+        #     dynamics_learner,
+        #     gumbel_generator,
+        #     device,
+        #     test_loader,
+        #     object_matrix,
+        #     experiment,
+        #     args.skip,
+        # )
 
 
 if __name__ == "__main__":
